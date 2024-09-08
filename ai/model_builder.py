@@ -22,8 +22,8 @@ with open("../data/computer_random.txt", "r") as computer_file:
 with open("../data/human_random.txt", "r") as human_file:
     human_data = list(map(parse_list_ints, human_file.readlines()))
 
-human_labels = [0] * 1000
-computer_labels = [1] * 1000
+human_labels = [0] * 10000
+computer_labels = [1] * 10000
 
 data = human_data + computer_data
 labels = human_labels + computer_labels
