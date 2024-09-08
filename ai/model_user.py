@@ -1,13 +1,14 @@
 from tensorflow.keras.preprocessing.sequence import pad_sequences
-from tensorflow.keras.models import load_model
+import pickle
 import numpy as np
 from random import randint
 
-saved_model = load_model("model.keras")
+with open("model.pickle", "rb") as model:
+    saved_model = pickle.load(model)
 
-rand_list = []
+    rand_list = []
 
-for i in range(randint(1, 100)):
-    rand_list.append(randint(1, 100)/100)
+    for i in range(randint(1, 100)):
+        rand_list.append(randint(1, 100)/100)
 
-print(saved_model(pad_sequences([np.array(rand_list)], maxlen=100, padding="post")))
+    print(saved_model(pad_sequences([np.array(rand_list)], maxlen=100, padding="post")))

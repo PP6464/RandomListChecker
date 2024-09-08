@@ -1,9 +1,10 @@
 import numpy as np
 import tensorflow as tf
 from tensorflow.keras.preprocessing.sequence import pad_sequences
-from tensorflow.keras.models import load_model, Model
+from tensorflow.keras.models import Model
 from tensorflow.keras.layers import GRU, LSTM, Dense, Input, Masking, Bidirectional, Layer
 from sklearn.model_selection import train_test_split
+import pickle
 
 
 # Parses "[1,2,3]" and returns a list [1,2,3]
@@ -34,6 +35,7 @@ data = list(map(lambda x: x / 100, data))  # Normalise data
 x_train, x_test, y_train, y_test = train_test_split(data, labels, test_size=0.2, random_state=42)
 
 
+@register_keras_serializable(package="Custom", name="Attention")
 class Attention(Layer):
     def __init__(self, units):
         super(Attention, self).__init__()
@@ -70,7 +72,7 @@ class Attention(Layer):
 # model.add(Bidirectional(GRU(128, return_sequences=True)))  # Bidirectional lets the RNN learn both ways in the list
 # model.add(Dense(1, activation="sigmoid"))  # Output layer
 
-# Build the GRU (Gated Recurrent Units) RNN
+# Build the GRU (Gated Recurrent Units) and LSTM (Long Short-term Memory) RNN
 seq_input = Input(shape=(100, 1))  # Input layer
 masked_input = Masking()(seq_input)  # Mask padded values
 gru_output = Bidirectional(GRU(128, return_sequences=True))(masked_input)
@@ -93,11 +95,13 @@ model.fit(x_train, np.array(y_train), epochs=10, batch_size=25, validation_split
 
 loss, accuracy = model.evaluate(x_test, np.array(y_test))
 
-saved_model = load_model("model.keras")  # Load saved model for comparison
+with open("model.pickle", "rb") as saved_model_file: # Load saved model for comparison
+    saved_model = pickle.load(saved_model_file)
 
-saved_model_loss, saved_model_accuracy = saved_model.evaluate(x_test, np.array(y_test))
+    saved_model_loss, saved_model_accuracy = saved_model.evaluate(x_test, np.array(y_test))
 
-if saved_model_accuracy < accuracy:
-    model.save("model.keras")
+    if saved_model_accuracy < accuracy:
+        with open("model.pickle", "wb") as model_file:
+            pickle.dump(model, model_file)
 
 print(f"Accuracy: {accuracy:.4f}")
