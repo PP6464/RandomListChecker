@@ -73,10 +73,10 @@ class Attention(Layer):
 # Build the GRU (Gated Recurrent Units) RNN
 seq_input = Input(shape=(100, 1))  # Input layer
 masked_input = Masking()(seq_input)  # Mask padded values
-gru_output = Bidirectional(GRU(256, return_sequences=True))(masked_input)
-lstm_output = Bidirectional(LSTM(256, return_sequences=True))(gru_output)
+gru_output = Bidirectional(GRU(128, return_sequences=True))(masked_input)
+lstm_output = Bidirectional(LSTM(128, return_sequences=True))(gru_output)
 
-attention_layer = Attention(128)
+attention_layer = Attention(64)
 
 context_vector, attention_weights = attention_layer(lstm_output, lstm_output[:, -1, :])
 
@@ -89,7 +89,7 @@ model.compile(optimizer="adam", loss="binary_crossentropy", metrics=["accuracy"]
 x_train = np.expand_dims(x_train, -1)
 x_test = np.expand_dims(x_test, -1)
 
-model.fit(x_train, np.array(y_train), epochs=10, batch_size=10, validation_split=0.2)
+model.fit(x_train, np.array(y_train), epochs=10, batch_size=25, validation_split=0.2)
 
 loss, accuracy = model.evaluate(x_test, np.array(y_test))
 
