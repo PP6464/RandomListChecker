@@ -56,11 +56,11 @@ model.fit(x_train, np.array(y_train), epochs=10, batch_size=25, validation_split
 
 loss, accuracy = model.evaluate(x_test, np.array(y_test))
 
-# saved_model = load_model("model.keras")
-#
-# saved_model_loss, saved_model_accuracy = saved_model.evaluate()
-#
-# if saved_model_accuracy < accuracy:
-#     model.save("model.keras")
-model.save("model.keras")
+saved_model = load_model("model.keras")
+
+saved_model_loss, saved_model_accuracy = saved_model.evaluate()
+
+if saved_model_accuracy < accuracy:
+    model.save("model.keras")
+
 print(f"Accuracy: {accuracy:.4f}")

@@ -1,7 +1,5 @@
 from tensorflow.keras.preprocessing.sequence import pad_sequences
-import tensorflow as tf
 import numpy as np
-import keras
 from layers.Attention import Attention
 from tensorflow.keras.models import load_model
 from random import randint
